@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "email-helm-chart.fullname" . }}
+  labels:
+    app: {{ template "email-helm-chart.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+{{- range $key, $value := .Values.email-helm-chart.config }}
+{{ $key | indent 2 }}: {{ $value | quote }}
+{{- end }}

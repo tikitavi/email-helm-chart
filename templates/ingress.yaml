@@ -1,0 +1,32 @@
+{{- if .Values.email-helm-chart.ingress.enabled -}}
+{{- $serviceName := include "email-helm-chart.fullname" . -}}
+{{- $servicePort := .Values.email-helm-chart.service.externalPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "email-helm-chart.fullname" . }}
+  labels:
+    app: {{ template "email-helm-chart.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- if .Values.email-helm-chart.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.email-helm-chart.ingress.annotations | indent 4 }}
+  {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.email-helm-chart.ingress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.email-helm-chart.ingress.tls }}
+  tls:
+{{ toYaml .Values.email-helm-chart.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

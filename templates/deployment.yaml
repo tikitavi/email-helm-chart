@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "email-helm-chart.fullname" . }}
+  labels:
+    app: {{ template "email-helm-chart.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+
+spec:
+  replicas: {{ .Values.email-helm-chart.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "email-helm-chart.name" . }}
+        release: {{ .Release.Name }}
+      {{- if .Values.email-helm-chart.deployment.annotations }}
+      annotations:
+{{ toYaml .Values.email-helm-chart.deployment.annotations | indent 8 }}
+      {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.email-helm-chart.image.repository }}:{{ .Values.email-helm-chart.image.tag }}"
+          imagePullPolicy: {{ .Values.email-helm-chart.image.pullPolicy }}
+          envFrom:
+          - configMapRef:
+              name: {{ template "email-helm-chart.fullname" . }} 
+          ports:
+            - containerPort: {{ .Values.email-helm-chart.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.email-helm-chart.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.email-helm-chart.service.internalPort }}
+          resources:
+{{ toYaml .Values.email-helm-chart.deployment.resources | indent 12 }}
+          # volumeMounts:
+          #   - name: data
+          #     mountPath: /tmp
+    {{- if .Values.email-helm-chart.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.email-helm-chart.deployment.nodeSelector | indent 8 }}
+    {{- end }}

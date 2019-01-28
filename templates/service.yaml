@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.email-helm-chart.service.name | default (include "email-helm-chart.fullname" .) }}
+  labels:
+    app: {{ template "email-helm-chart.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- if .Values.email-helm-chart.deployment.annotations }}
+  annotations:
+{{ toYaml .Values.email-helm-chart.deployment.annotations | indent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.email-helm-chart.service.type }}
+  {{- if .Values.email-helm-chart.service.clusterIP }}
+  clusterIP: {{ .Values.email-helm-chart.service.clusterIP }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.email-helm-chart.service.externalPort }}
+      targetPort: {{ .Values.email-helm-chart.service.internalPort }}
+      protocol: TCP
+      name: {{ .Values.email-helm-chart.service.name }}
+  selector:
+    app: {{ template "email-helm-chart.name" . }}
+    release: {{ .Release.Name }}

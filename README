@@ -1,0 +1,21 @@
+This directory contains a email Helm chart. To use it, use your
+favorite text editor to replace <CHARTNAME> with the proposed name of
+your chart.
+
+The email-helm-chart chart presupposes that your application requires the
+following resources:
+* deployment
+* service
+* configmap
+* secret
+* persistentvolumeclaim
+* ingress
+
+To make use of the chart, add it to the directory helm/charts/chartname.
+
+Feel free to add and remove resources as necessary for your application.
+
+Resources for getting started with Helm charts:
+https://docs.helm.sh/chart_template_guide/
+https://docs.helm.sh/chart_best_practices/
+http://masterminds.github.io/sprig/

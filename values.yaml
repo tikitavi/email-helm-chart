@@ -1,0 +1,25 @@
+# Default values for email-helm-chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+email-helm-chart:
+  replicaCount: 1
+  image:
+    repository: tikitavi/email-helm-chart
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    externalPort: 8080
+    internalPort: 8080
+  # Annotations for the deployment
+  deployment:
+    annotations: {}
+    resources: {}
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    enabled: true
+    hosts:
+    - email-helm-chart.atom.<CLUSTER_NAME>
+    path: /

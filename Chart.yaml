@@ -1,0 +1,11 @@
+version: 1.0.0
+appVersion: 1.0.0
+description: A Helm chart for running email-script
+home: https://github.com/tikitavi/email-script
+# icon: 
+sources:
+- https://github.com/tikitavi/email-script
+maintainers:
+- name: tikitavi
+  email: rtikitavi@gmail.com
+name: email-helm-chart
